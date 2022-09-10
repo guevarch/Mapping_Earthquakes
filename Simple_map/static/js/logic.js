@@ -41,7 +41,7 @@ L.geoJSON(data, {
 color: "#ffffa1",
 weight: 2,
 onEachFeature: function(feature, layer) {
-  layer.bindPopup("<h3> Airline: " + feature.properties.airline + "</h3> <hr><h3> Destination:" + feature.properties.dst + "<h3/>");
+  layer.bindPopup("<h3> Airline: " + feature.properties.airline + "</h3> <hr><h3> Destination: " + feature.properties.dst + "<h3/>");
 }
 })
 .addTo(map);
