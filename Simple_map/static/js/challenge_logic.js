@@ -138,13 +138,18 @@ legend.onAdd = function() {
   };
   // Finally, we our legend to the map.
   legend.addTo(map);
-  
+
   let tecdata = "https://raw.githubusercontent.com/guevarch/Mapping_Earthquakes/main/tecplate.json";
   d3.json(tecdata).then(function(data) {
-    console.log(data);
-    L.geoJSON(data)
+  console.log(data);
+  L.geoJSON(data, {
+    color: '#3388ff',
+    weight: 5
   }).addTo(Tectonic);
 
   // Then we add the earthquake layer to our map.
   Tectonic.addTo(map);
+  });
+  
 });
+  
