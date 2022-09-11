@@ -30,13 +30,12 @@ let baseMaps = {
 
 // 1. Add a 2nd layer group for the tectonic plate data.
 let allEarthquakes = new L.LayerGroup();
-let tectonic = new L.LayerGroup1();
-
+let Tectonic = new L.LayerGroup();
 
 // 2. Add a reference to the tectonic plates group to the overlays object.
 let overlays = {
   "Earthquakes": allEarthquakes,
-  "Tectonic" : tectonic
+  "Tectonic": Tectonic,
 };
 
 // Then we add a control to the map that will allow the user to change which
@@ -137,13 +136,15 @@ legend.onAdd = function() {
     }
     return div;
   };
-
   // Finally, we our legend to the map.
   legend.addTo(map);
+  
+  let tecdata = "https://raw.githubusercontent.com/guevarch/Mapping_Earthquakes/main/tecplate.json";
+  d3.json(tecdata).then(function(data) {
+    console.log(data);
+    L.geoJSON(data)
+  }).addTo(Tectonic);
 
-
-  // 3. Use d3.json to make a call to get our Tectonic Plate geoJSON data.
-  d3.json().then(() {
-    
-  });
+  // Then we add the earthquake layer to our map.
+  Tectonic.addTo(map);
 });
