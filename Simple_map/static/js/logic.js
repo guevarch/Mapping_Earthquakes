@@ -13,6 +13,12 @@ attribution: 'Map data © <a href="https://www.openstreetmap.org/">OpenStreetMap
 });
 // Then we add our 'graymap' tile layer to the map.
 // Create a base layer that holds both maps.
+
+// Create the earthquake layer for our map.
+let earthquakes = new L.layerGroup();
+let overlays = {
+  Earthquakes: earthquakes
+};
 let baseMaps = {
   "Street": streets,
   "Satellite Streets": satelliteStreets
@@ -25,15 +31,15 @@ let map = L.map('mapid', {
 })
 
 // Pass our map layers into our layers control and add the layers control to the map.
-L.control.layers(baseMaps).addTo(map);
+L.control.layers(baseMaps, overlays).addTo(map);
 
 function styleInfo(feature) {
   return {
     opacity: 1,
     fillOpacity: 1,
-    fillColor: "#ffae42",
+    fillColor: getColor(feature.properties.mag),
     color: "#000000",
-    radius: getRadius(),
+    radius: getRadius(feature.properties.mag),
     stroke: true,
     weight: 0.5
   };
@@ -46,20 +52,44 @@ function getRadius(magnitude) {
   return magnitude * 4;
 }
 
+function getColor(magnitude) {
+  if (magnitude > 5) {
+    return "#ea2c2c";
+  }
+  if (magnitude > 4) {
+    return "#ea822c";
+  }
+  if (magnitude > 3) {
+    return "#ee9c00";
+  }
+  if (magnitude > 2) {
+    return "#eecc00";
+  }
+  if (magnitude > 1) {
+    return "#d4ee00";
+  }
+  return "#98ee00";
+}
+
   // Accessing the airport GeoJSON URL
 d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson").then(function(data) {
 
-// Creating a GeoJSON layer with the retrieved data.
 L.geoJSON(data, {
   // We turn each feature into a circleMarker on the map.
-  
   pointToLayer: function(feature, latlng) {
-              console.log(data);
-              return L.circleMarker(latlng);
-          },
-        // We set the style for each circleMarker using our styleInfo function.
-      style: styleInfo
-      }).addTo(map);
-  });
+      console.log(data);
+      return L.circleMarker(latlng);
+    },
+
+style: styleInfo,
+  onEachFeature: function(feature, layer) {
+  layer.bindPopup("Magnitude: " + feature.properties.mag + "<br>Location: " + feature.properties.place);
+}
+}).addTo(earthquakes);
+
+earthquakes.addTo(map);
+
+
+});
 
 
